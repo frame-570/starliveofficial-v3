@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>กระดาษของฉัน</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@400;500;600;700&family=Charmonman:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  :root{
+    --paper-base: #e9dcbd;
+    --paper-base-2: #ddceac;
+    --stain-dark: #8a6a3a;
+    --stain-mid: #a9835082;
+    --ink: #2b2116;
+    --ink-soft: #4a3c28;
+    --stamp: #6b4a2a;
+    --bg: #171310;
+  }
+
+  * { box-sizing: border-box; }
+
+  html,body{
+    margin:0;
+    min-height:100%;
+    background: var(--bg);
+    background-image:
+      radial-gradient(ellipse at 30% 20%, #232019 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 90%, #1c1712 0%, transparent 55%);
+    font-family: 'Noto Serif Thai', serif;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    padding: 32px 16px 48px;
+    color: var(--ink);
+  }
+
+  .stage{
+    width:100%;
+    max-width: 440px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+
+  .intro{
+    color:#c9bfa9;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    margin-bottom: 22px;
+    text-align:center;
+    opacity:0.75;
+    line-height:1.6;
+  }
+
+  /* --- The paper page itself --- */
+  .page-wrap{
+    position:relative;
+    transform: rotate(-0.6deg);
+  }
+
+  .page{
+    position:relative;
+    width: min(88vw, 400px);
+    aspect-ratio: 3 / 4;
+    background:
+      linear-gradient(155deg, var(--paper-base) 0%, var(--paper-base-2) 55%, #dcccA4 100%);
+    box-shadow:
+      0 2px 0 rgba(255,255,255,0.15) inset,
+      0 30px 60px -20px rgba(0,0,0,0.65),
+      0 8px 20px -6px rgba(0,0,0,0.5);
+    padding: 15% 11%;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+
+  .page::before{
+    /* coarse paper: rougher, larger-grained fiber texture */
+    content:"";
+    position:absolute;
+    inset:0;
+    opacity:0.48;
+    mix-blend-mode:multiply;
+    background-repeat:repeat;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.35  0 0 0 0 0.28  0 0 0 0 0.16  0 0 0 0.65 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 60px 60px;
+    pointer-events:none;
+  }
+
+  .page .highlight{
+    position:absolute;
+    inset:0;
+    opacity:0.42;
+    mix-blend-mode:screen;
+    background-repeat:repeat;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1  0 0 0 0 0.97  0 0 0 0 0.86  0 0 0 0.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 60px 60px;
+    pointer-events:none;
+    z-index: 0;
+  }
+
+  .page .grain-top{
+    /* same coarse grain laid over the ink too, so text reads as absorbed into the paper rather than printed flat on top */
+    position:absolute;
+    inset:0;
+    z-index: 3;
+    opacity:0.55;
+    mix-blend-mode:overlay;
+    background-repeat:repeat;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.35  0 0 0 0 0.28  0 0 0 0 0.16  0 0 0 0.65 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 60px 60px;
+    pointer-events:none;
+  }
+
+  .page::after{
+    /* faint even edge shading, no rings */
+    content:"";
+    position:absolute;
+    inset:0;
+    box-shadow: inset 0 0 18px 2px rgba(40,28,14,0.12);
+    pointer-events:none;
+  }
+
+  .quote-mark{
+    font-family:'Noto Serif Thai', serif;
+    font-weight:700;
+    font-size: 54px;
+    line-height:1;
+    color: var(--stamp);
+    opacity:0.55;
+    margin-bottom: -6px;
+    position:relative;
+    z-index:1;
+  }
+
+  .quote-text{
+    position:relative;
+    z-index:1;
+    flex:1;
+    display:flex;
+    align-items:center;
+    outline:none;
+    font-size: 21px;
+    line-height: 1.85;
+    color: var(--ink);
+    text-indent: 1.4em;
+    text-shadow: 0 0 0.6px rgba(43,33,22,0.35);
+    letter-spacing: 0.01em;
+    word-break: break-word;
+  }
+
+  .quote-text:empty::before{
+    content: attr(data-placeholder);
+    color: rgba(43,33,22,0.45);
+  }
+
+  .byline{
+    position:relative;
+    z-index:1;
+    outline:none;
+    text-align:right;
+    font-family:'Charmonman', cursive;
+    font-size: 22px;
+    color: var(--ink-soft);
+    margin-top: 10px;
+  }
+  .byline:empty::before{
+    content: attr(data-placeholder);
+    color: rgba(74,60,40,0.45);
+  }
+
+  .byline::before.dash{ }
+
+  .page-number{
+    position:relative;
+    z-index:1;
+    text-align:center;
+    font-size: 12px;
+    color: rgba(43,33,22,0.5);
+    margin-top: 14px;
+    letter-spacing: 0.15em;
+  }
+
+  /* --- controls --- */
+  .controls{
+    margin-top: 30px;
+    display:flex;
+    gap:14px;
+    align-items:center;
+  }
+
+  .save-btn{
+    appearance:none;
+    border:none;
+    cursor:pointer;
+    font-family:'Noto Serif Thai', serif;
+    font-weight:600;
+    font-size: 15px;
+    color: #f2e9d3;
+    background: linear-gradient(160deg, #7a5530, #5c3f22);
+    padding: 12px 26px;
+    clip-path: polygon(3% 0%, 97% 2%, 100% 55%, 96% 100%, 4% 98%, 0% 45%);
+    box-shadow: 0 6px 14px -4px rgba(0,0,0,0.6);
+    letter-spacing: 0.03em;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .save-btn:hover{ transform: translateY(-1px); box-shadow: 0 9px 18px -4px rgba(0,0,0,0.65); }
+  .save-btn:active{ transform: translateY(1px) scale(0.98); }
+
+  .status{
+    font-size:12px;
+    color:#c9bfa9;
+    opacity:0.8;
+    min-height:16px;
+  }
+
+  @media (max-width:380px){
+    .quote-text{ font-size: 19px; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="stage">
+    <div class="intro">แตะข้อความบนกระดาษเพื่อพิมพ์คำคมของคุณ</div>
+
+    <div class="page-wrap">
+      <div class="page" id="page">
+        <div class="highlight"></div>
+        <div class="quote-mark">“</div>
+        <div class="quote-text"
+             id="quoteText"
+             contenteditable="true"
+             data-placeholder="ชีวิตไม่ได้วัดกันที่ลมหายใจ แต่วัดกันที่ช่วงเวลาที่ทำให้เราหายใจไม่ทัน"></div>
+        <div class="byline"
+             id="byline"
+             contenteditable="true"
+             data-placeholder="— ไม่ทราบนาม"></div>
+        <div class="page-number" id="pageNumber">๑๒๗</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="save-btn" id="saveBtn">บันทึกรูปภาพ</button>
+    </div>
+    <div class="status" id="status"></div>
+  </div>
+
+<script>
+  const quoteText = document.getElementById('quoteText');
+  const byline = document.getElementById('byline');
+  const page = document.getElementById('page');
+  const saveBtn = document.getElementById('saveBtn');
+  const statusEl = document.getElementById('status');
+
+  const BASE_SIZE = 21;
+  const MIN_SIZE = 13;
+
+  function fitText(){
+    quoteText.style.fontSize = BASE_SIZE + 'px';
+    let size = BASE_SIZE;
+    // shrink until the page no longer needs to scroll internally
+    while (page.scrollHeight > page.clientHeight && size > MIN_SIZE) {
+      size -= 1;
+      quoteText.style.fontSize = size + 'px';
+    }
+  }
+
+  quoteText.addEventListener('input', fitText);
+  window.addEventListener('resize', fitText);
+  window.addEventListener('load', fitText);
+
+  // Force plain text on paste (keeps the "ink on paper" look consistent)
+  [quoteText, byline].forEach(el => {
+    el.addEventListener('paste', (e) => {
+      e.preventDefault();
+      const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+      document.execCommand('insertText', false, text);
+    });
+  });
+
+  saveBtn.addEventListener('click', async () => {
+    statusEl.textContent = 'กำลังสร้างรูปภาพ...';
+    saveBtn.disabled = true;
+
+    quoteText.blur();
+    byline.blur();
+    document.body.classList.add('exporting');
+
+    try {
+      const canvas = await html2canvas(page, {
+        scale: 3,
+        backgroundColor: null,
+        useCORS: true
+      });
+      const link = document.createElement('a');
+      link.download = 'คำคมกระดาษชา.png';
+      link.href = canvas.toDataURL('image/png', 1.0);
+      link.click();
+      statusEl.textContent = 'บันทึกแล้ว ✓';
+    } catch (err) {
+      statusEl.textContent = 'เกิดข้อผิดพลาด ลองใหม่อีกครั้ง';
+      console.error(err);
+    } finally {
+      saveBtn.disabled = false;
+      setTimeout(() => { statusEl.textContent = ''; }, 2500);
+    }
+  });
+</script>
+</body>
+</html>
